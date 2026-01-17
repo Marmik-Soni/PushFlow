@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PushFlow</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/icons/icon-192.png" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --white: #ffffff;
+        --black: #000000;
+        --gray-50: #fafafa;
+        --gray-100: #f5f5f5;
+        --gray-200: #e5e5e5;
+        --gray-300: #d4d4d4;
+        --gray-400: #a3a3a3;
+        --gray-500: #737373;
+        --gray-600: #525252;
+        --gray-700: #404040;
+        --gray-800: #262626;
+        --gray-900: #171717;
+        --blue: #3b82f6;
+        --blue-light: #60a5fa;
+        --green: #10b981;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+        background: var(--white);
+        color: var(--gray-900);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+
+      .shell {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 32px 40px;
+      }
+
+      header {
+        margin-bottom: 32px;
+      }
+
+      h1 {
+        font-size: 40px;
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        color: var(--black);
+        margin-bottom: 8px;
+      }
+
+      .subtitle {
+        font-size: 18px;
+        color: var(--gray-600);
+        font-weight: 400;
+      }
+
+      .grid {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .card {
+        background: var(--white);
+        border: 1px solid var(--gray-200);
+        border-radius: 20px;
+        padding: 24px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .card:hover {
+        border-color: var(--gray-300);
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+      }
+
+      .card h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: var(--black);
+      }
+
+      .muted {
+        font-size: 14px;
+        color: var(--gray-500);
+        line-height: 1.5;
+        margin-bottom: 16px;
+      }
+
+      button {
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+      }
+
+      button:not(.secondary) {
+        background: var(--black);
+        color: var(--white);
+      }
+
+      button:not(.secondary):hover {
+        background: var(--gray-800);
+        transform: translateY(-1px);
+      }
+
+      button:not(.secondary):active {
+        transform: translateY(0);
+      }
+
+      button.secondary {
+        background: var(--gray-100);
+        color: var(--gray-700);
+      }
+
+      button.secondary:hover {
+        background: var(--gray-200);
+      }
+
+      .row {
+        display: flex;
+        gap: 12px;
+      }
+
+      textarea {
+        width: 100%;
+        font-family: inherit;
+        font-size: 14px;
+        background: var(--gray-50);
+        border: 1px solid var(--gray-200);
+        border-radius: 10px;
+        padding: 12px 14px;
+        color: var(--gray-900);
+        outline: none;
+        resize: vertical;
+        transition: all 0.2s ease;
+      }
+
+      textarea:focus {
+        background: var(--white);
+        border-color: var(--black);
+      }
+
+      textarea::placeholder {
+        color: var(--gray-400);
+      }
+
+      ul {
+        list-style: none;
+      }
+
+      .device {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        background: var(--gray-50);
+        border: 1px solid var(--gray-200);
+        border-radius: 12px;
+        margin-bottom: 12px;
+        transition: all 0.2s ease;
+      }
+
+      .device:hover {
+        background: var(--white);
+        border-color: var(--gray-300);
+      }
+
+      .device:last-child {
+        margin-bottom: 0;
+      }
+
+      .device strong {
+        font-weight: 600;
+        color: var(--black);
+      }
+
+      .device-info {
+        font-size: 14px;
+        color: var(--gray-500);
+      }
+
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--gray-500);
+      }
+
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--green);
+      }
+
+      .toast {
+        position: fixed;
+        right: 32px;
+        bottom: 32px;
+        background: var(--black);
+        color: var(--white);
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-size: 15px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+        display: none;
+        animation: slideUp 0.3s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+      }
+
+      .wide {
+        grid-column: 1 / -1;
+      }
+
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+
+        .wide {
+          grid-column: 1;
+        }
+
+        .card {
+          padding: 28px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .shell {
+          padding: 32px 20px 60px;
+        }
+
+        header {
+          margin-bottom: 48px;
+        }
+
+        h1 {
+          font-size: 32px;
+          margin-bottom: 10px;
+        }
+
+        .subtitle {
+          font-size: 16px;
+        }
+
+        .card {
+          padding: 24px;
+          border-radius: 16px;
+        }
+
+        .card h3 {
+          font-size: 18px;
+          margin-bottom: 6px;
+        }
+
+        .muted {
+          font-size: 14px;
+          margin-bottom: 20px;
+        }
+
+        .row {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        button {
+          width: 100%;
+          padding: 14px 24px;
+          font-size: 15px;
+        }
+
+        textarea {
+          font-size: 15px;
+          padding: 14px 16px;
+          border-radius: 12px;
+        }
+
+        .device {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+          padding: 16px;
+        }
+
+        .device strong {
+          font-size: 15px;
+        }
+
+        .device-info {
+          font-size: 13px;
+        }
+
+        .status {
+          font-size: 12px;
+        }
+
+        .toast {
+          right: 20px;
+          bottom: 20px;
+          left: 20px;
+          font-size: 14px;
+          padding: 14px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header>
+        <h1>PushFlow</h1>
+        <p class="subtitle">Real-time notifications across devices</p>
+      </header>
+
+      <div class="grid">
+        <section class="card">
+          <h3>Notifications</h3>
+          <p class="muted">Subscribe this device to start receiving push notifications.</p>
+          <div class="row">
+            <button id="enableBtn">Enable</button>
+            <button id="unsubscribeBtn" class="secondary">Unsubscribe</button>
+          </div>
+          <p
+            class="muted"
+            id="statusText"
+            style="margin-top: 12px; margin-bottom: 0; font-size: 13px; color: var(--gray-400)"
+          >
+            Ready to subscribe.
+          </p>
+        </section>
+
+        <section class="card">
+          <h3>Send Message</h3>
+          <p class="muted">Broadcast a message to all connected devices instantly.</p>
+          <textarea id="messageInput" rows="3" placeholder="Type your message..."></textarea>
+          <button id="sendBtn" style="margin-top: 12px; width: 100%">Send</button>
+        </section>
+
+        <section class="card wide">
+          <h3>Devices</h3>
+          <p class="muted">All subscribed devices will appear here in real-time.</p>
+          <ul id="devicesList"></ul>
+        </section>
+      </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>

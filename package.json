@@ -1,0 +1,45 @@
+{
+  "name": "web-push-demo",
+  "version": "1.0.0",
+  "description": "Web Push Notification Demo with PWA support",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "lint": "eslint . --max-warnings=0",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "prepare": "husky"
+  },
+  "keywords": [
+    "web-push",
+    "pwa",
+    "notifications"
+  ],
+  "author": "Marmik Soni",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "dotenv": "^16.4.0",
+    "express": "^4.19.0",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
+    "mongodb": "^7.0.0",
+    "morgan": "^1.10.1",
+    "web-push": "^3.6.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.3.1",
+    "@commitlint/config-conventional": "^20.3.1",
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-n": "^17.23.2",
+    "eslint-plugin-promise": "^7.2.1",
+    "husky": "^9.1.7",
+    "nodemon": "^3.1.11",
+    "prettier": "^3.8.0"
+  }
+}
