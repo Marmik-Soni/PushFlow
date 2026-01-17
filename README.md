@@ -152,9 +152,30 @@ curl -X POST http://localhost:3000/send-notification \
 
 ## 📦 Deployment
 
-Works on all major platforms:
+### Vercel (Recommended)
 
-- **Vercel / Netlify / Render** - Connect GitHub, add env vars, deploy
+1. **Push to GitHub** (already done ✅)
+
+2. **Import to Vercel:**
+   - Go to [vercel.com/new](https://vercel.com/new)
+   - Import your GitHub repository
+   - Vercel will auto-detect the configuration
+
+3. **Add Environment Variables:**
+
+   ```
+   MONGODB_URI=your_mongodb_connection_string
+   MONGODB_DB_NAME=pushflow
+   VAPID_PUBLIC_KEY=your_public_key
+   VAPID_PRIVATE_KEY=your_private_key
+   VAPID_SUBJECT=mailto:your-email@example.com
+   ```
+
+4. **Deploy** - Click "Deploy" and you're live! 🚀
+
+### Other Platforms
+
+- **Netlify / Render** - Connect GitHub, add env vars, deploy
 - **Railway / Fly.io** - One-click deploy with MongoDB Atlas
 - **VPS / Docker** - Standard Node.js deployment
 
