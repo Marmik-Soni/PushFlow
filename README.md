@@ -1,5 +1,6 @@
 # PushFlow
 
+[![CI](https://github.com/Marmik-Soni/PushFlow/actions/workflows/ci.yml/badge.svg)](https://github.com/Marmik-Soni/PushFlow/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen)](https://nodejs.org)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -41,8 +42,8 @@ A clean, minimal Progressive Web App demonstrating real-time Web Push Notificati
 ### Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/web-push-noti-PWA.git
-cd web-push-noti-PWA
+git clone https://github.com/Marmik-Soni/PushFlow.git
+cd PushFlow
 pnpm install
 ```
 
