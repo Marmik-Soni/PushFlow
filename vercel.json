@@ -1,9 +1,7 @@
 {
+  "buildCommand": "echo 'No build needed'",
+  "outputDirectory": "public",
   "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/api"
-    },
     {
       "source": "/health",
       "destination": "/api"
@@ -27,10 +25,6 @@
     {
       "source": "/devices",
       "destination": "/api"
-    },
-    {
-      "source": "/",
-      "destination": "/public/index.html"
     }
   ]
 }
