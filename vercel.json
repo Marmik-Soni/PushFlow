@@ -1,30 +1,38 @@
 {
-  "buildCommand": "echo 'No build needed'",
-  "outputDirectory": "public",
-  "rewrites": [
+  "functions": {
+    "api/index.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "routes": [
     {
-      "source": "/health",
-      "destination": "/api"
+      "src": "/health",
+      "dest": "/api"
     },
     {
-      "source": "/vapid-public-key",
-      "destination": "/api"
+      "src": "/vapid-public-key",
+      "dest": "/api"
     },
     {
-      "source": "/subscribe",
-      "destination": "/api"
+      "src": "/subscribe",
+      "dest": "/api"
     },
     {
-      "source": "/unsubscribe",
-      "destination": "/api"
+      "src": "/unsubscribe",
+      "dest": "/api"
     },
     {
-      "source": "/send-notification",
-      "destination": "/api"
+      "src": "/send-notification",
+      "dest": "/api"
     },
     {
-      "source": "/devices",
-      "destination": "/api"
+      "src": "/devices",
+      "dest": "/api"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
     }
   ]
 }
