@@ -1,12 +1,36 @@
 {
   "rewrites": [
     {
-      "source": "/api/(.*)",
+      "source": "/api/:path*",
       "destination": "/api"
     },
     {
-      "source": "/((?!api).*)",
+      "source": "/health",
       "destination": "/api"
+    },
+    {
+      "source": "/vapid-public-key",
+      "destination": "/api"
+    },
+    {
+      "source": "/subscribe",
+      "destination": "/api"
+    },
+    {
+      "source": "/unsubscribe",
+      "destination": "/api"
+    },
+    {
+      "source": "/send-notification",
+      "destination": "/api"
+    },
+    {
+      "source": "/devices",
+      "destination": "/api"
+    },
+    {
+      "source": "/",
+      "destination": "/public/index.html"
     }
   ]
 }
