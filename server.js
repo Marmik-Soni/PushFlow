@@ -1,6 +1,3 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
-
 import dotenv from 'dotenv';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
@@ -9,9 +6,6 @@ import morgan from 'morgan';
 import webpush from 'web-push';
 
 import { getCollections } from './database/db.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -54,7 +48,7 @@ const apiLimiter = rateLimit({
 app.use(['/subscribe', '/unsubscribe', '/send-notification', '/devices'], apiLimiter);
 
 app.use(express.json({ limit: '1mb' }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
 app.get('/health', (req, res) => {
   res.json({ ok: true });
