@@ -1,5 +1,5 @@
 import { getCollections } from '../database/db.js';
-import app from '../server.js';
+import app from '../server.mjs';
 
 let isInitialized = false;
 

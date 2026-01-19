@@ -59,7 +59,7 @@ app.get('/vapid-public-key', (req, res) => {
 });
 
 app.post('/subscribe', async (req, res) => {
-  const { deviceId, subscription } = req.body || {};
+  const { deviceId, subscription, deviceName } = req.body || {};
 
   if (!deviceId || !subscription || !subscription.endpoint) {
     return res.status(400).json({ error: 'deviceId and valid subscription are required.' });
@@ -74,6 +74,7 @@ app.post('/subscribe', async (req, res) => {
           subscription,
           endpoint: subscription.endpoint,
           keys: subscription.keys,
+          deviceName: deviceName || req.headers['user-agent'] || 'Unknown device',
           lastSeen: new Date(),
         },
         $setOnInsert: { createdAt: new Date() },
@@ -109,7 +110,19 @@ app.get('/devices', async (req, res) => {
   try {
     const { devices } = await getCollections();
     const results = await devices
-      .find({}, { projection: { _id: 0, deviceId: 1, endpoint: 1, lastSeen: 1, createdAt: 1 } })
+      .find(
+        {},
+        {
+          projection: {
+            _id: 0,
+            deviceId: 1,
+            deviceName: 1,
+            endpoint: 1,
+            lastSeen: 1,
+            createdAt: 1,
+          },
+        }
+      )
       .sort({ lastSeen: -1, createdAt: -1 })
       .toArray();
 
@@ -123,12 +136,22 @@ app.get('/devices', async (req, res) => {
 app.post('/send-notification', async (req, res) => {
   const { deviceId, message } = req.body || {};
 
+  if (!deviceId) {
+    return res.status(400).json({ error: 'deviceId is required.' });
+  }
+
   if (!message) {
     return res.status(400).json({ error: 'message is required.' });
   }
 
   try {
     const { devices, messages } = await getCollections();
+
+    const sender = await devices.findOne({ deviceId });
+    if (!sender) {
+      return res.status(403).json({ error: 'Sender is not subscribed.' });
+    }
+
     const allDevices = await devices.find({}).toArray();
 
     const payload = JSON.stringify({
@@ -166,6 +189,18 @@ app.post('/send-notification', async (req, res) => {
   } catch (error) {
     console.error('/send-notification failed', error);
     return res.status(500).json({ error: 'Failed to send notifications.' });
+  }
+});
+
+// Danger: Removes all subscriptions. No UI, invoke manually if needed.
+app.post('/admin/unsubscribe-all', async (req, res) => {
+  try {
+    const { devices } = await getCollections();
+    const result = await devices.deleteMany({});
+    return res.json({ ok: true, removed: result.deletedCount || 0 });
+  } catch (error) {
+    console.error('/admin/unsubscribe-all failed', error);
+    return res.status(500).json({ error: 'Failed to unsubscribe all devices.' });
   }
 });
 
