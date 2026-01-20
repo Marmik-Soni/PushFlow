@@ -19,7 +19,7 @@ A clean, minimal Progressive Web App demonstrating real-time Web Push Notificati
 - **Self-Hosted** - No Firebase, no third-party services
 - **MongoDB Backed** - Persistent cloud storage
 - **Secure** - VAPID authentication, Helmet security headers, rate limiting
-- **Clean UI** - Minimal, responsive design
+- **Modern Slate UI** - Responsive masonry layout with dark/slate aesthetic and smooth animations
 - **Open Source** - MIT licensed
 
 ---

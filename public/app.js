@@ -49,10 +49,20 @@ function getDeviceId() {
 function showToast(message, variant = 'info') {
   toastEl.textContent = message;
   toastEl.style.display = 'block';
-  toastEl.style.borderColor = variant === 'error' ? '#f87171' : '#22d3ee';
+
+  // Update style for new design system
+  if (variant === 'error') {
+    toastEl.style.backgroundColor = 'var(--danger)';
+    toastEl.style.color = '#fff';
+  } else {
+    toastEl.style.backgroundColor = 'var(--text-main)';
+    toastEl.style.color = '#fff';
+  }
+
   setTimeout(() => {
     toastEl.style.display = 'none';
-  }, 2400);
+    toastEl.style.backgroundColor = ''; // Reset
+  }, 3000);
 }
 
 function setExpiry(minutes = AUTO_UNSUB_MS) {
@@ -278,6 +288,67 @@ async function sendMessage() {
     showToast('Type a message first', 'error');
     return;
   }
+
+  // Secret: Type "::RESET::" to unsubscribe all devices
+  if (message.toUpperCase() === '::RESET::') {
+    const modal = document.getElementById('confirmModal');
+    const confirmBtn = document.getElementById('confirmReset');
+    const cancelBtn = document.getElementById('cancelReset');
+    const box = modal.firstElementChild;
+
+    modal.style.display = 'flex';
+    // Small delay to allow display:flex to apply before adding opacity class for transition
+    window.requestAnimationFrame(() => {
+      modal.style.opacity = '1';
+      box.style.transform = 'scale(1)';
+    });
+
+    const close = () => {
+      modal.style.opacity = '0';
+      box.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 200);
+    };
+
+    return new Promise((resolve) => {
+      const handleConfirm = async () => {
+        close();
+        try {
+          await fetchJson('/admin/unsubscribe-all', { method: 'POST' });
+          showToast('System reset: All devices unsubscribed', 'error');
+          messageInput.value = '';
+          await loadDevices();
+        } catch (error) {
+          console.error(error);
+          showToast('Reset failed', 'error');
+        }
+        cleanup();
+        resolve(true);
+      };
+
+      const handleCancel = () => {
+        close();
+        cleanup();
+        resolve(false);
+      };
+
+      const cleanup = () => {
+        confirmBtn.removeEventListener('click', handleConfirm);
+        cancelBtn.removeEventListener('click', handleCancel);
+        modal.removeEventListener('click', backdropClick);
+      };
+
+      const backdropClick = (e) => {
+        if (e.target === modal) handleCancel();
+      };
+
+      confirmBtn.addEventListener('click', handleConfirm);
+      cancelBtn.addEventListener('click', handleCancel);
+      modal.addEventListener('click', backdropClick);
+    });
+  }
+
   if (!state.subscription) {
     showToast('Subscribe first to send', 'error');
     return;
