@@ -2,6 +2,7 @@
   "name": "web-push-demo",
   "version": "1.0.0",
   "description": "Web Push Notification Demo with PWA support",
+  "type": "module",
   "main": "server.mjs",
   "scripts": {
     "start": "node server.mjs",
@@ -21,7 +22,6 @@
   "license": "ISC",
   "dependencies": {
     "better-sqlite3": "^11.0.0",
-    "cors": "^2.8.5",
     "dotenv": "^16.4.0",
     "express": "^4.19.0",
     "express-rate-limit": "^8.2.1",
@@ -42,6 +42,5 @@
     "husky": "^9.1.7",
     "nodemon": "^3.1.11",
     "prettier": "^3.8.0"
-  },
-  "type": "module"
+  }
 }
