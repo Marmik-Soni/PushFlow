@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f8fafc" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-status-bar-style"w content="default" />
     <title>PushFlow</title>
 
     <!-- PWA Manifest -->
@@ -23,120 +23,288 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
     <style>
       :root {
-        --bg-body: #f8fafc;
+        /* Zinc Scale (Neutral but premium) */
+        --bg-body: #ffffff;
         --bg-card: #ffffff;
-        --text-main: #0f172a;
-        --text-muted: #64748b;
-        --primary: #0f172a;
-        --primary-hover: #1e293b;
-        --accent: #3b82f6;
+
+        --text-main: #09090b; /* Zinc-950 */
+        --text-muted: #71717a; /* Zinc-500 */
+
+        --primary: #18181b;   /* Zinc-900 */
+        --primary-hover: #000000;
+        --primary-text: #ffffff;
+
+        --border: #e4e4e7;    /* Zinc-200 */
+
         --success: #10b981;
+        --success-bg: #d1fae5;
         --danger: #ef4444;
-        --border: #e2e8f0;
+        --warning: #f59e0b;
+
         --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+
+        --radius-btn: 9999px;
+        --radius-card: 24px;
+        --radius-input: 16px;
+
+        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
+      /* Manual Light Mode */
+      [data-theme='light'] {
+        --bg-body: #ffffff;
+        --bg-card: #ffffff;
+        --text-main: #09090b;
+        --text-muted: #71717a;
+        --primary: #18181b;
+        --primary-hover: #000000;
+        --primary-text: #ffffff;
+        --border: #e4e4e7;
+        --success: #10b981;
+        --success-bg: #d1fae5;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      }
+
+      /* Dark Mode (System & Manual) */
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg-body: #09090b;   /* Zinc-950 (Rich Black) */
+          --bg-card: #18181b;   /* Zinc-900 */
+
+          --text-main: #fafafa; /* Zinc-50 */
+          --text-muted: #a1a1aa; /* Zinc-400 */
+
+          --primary: #fafafa;   /* Zinc-50 */
+          --primary-hover: #ffffff;
+          --primary-text: #09090b; /* Black text on white btn */
+
+          --border: #27272a;    /* Zinc-800 */
+
+          --success: #34d399;
+          --success-bg: rgba(52, 211, 153, 0.1);
+          --danger: #ef4444;
+          --warning: #fbbf24;
+
+          --shadow-sm: none;
+          --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.5);
+        }
+      }
+
+      [data-theme='dark'] {
+        --bg-body: #09090b;
+        --bg-card: #18181b;
+        --text-main: #fafafa;
+        --text-muted: #a1a1aa;
+        --primary: #fafafa;
+        --primary-hover: #ffffff;
+        --primary-text: #09090b;
+        --border: #27272a;
+        --success: #34d399;
+        --success-bg: rgba(52, 211, 153, 0.1);
+        --danger: #ef4444;
+        --warning: #fbbf24;
+        --shadow-sm: none;
+      }
+
+      /* Resets & Base */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Base Variables (Default Light) */
+      :root {
+        /* Zinc Scale (Neutral but premium) */
+        --bg-body: #ffffff;
+        --bg-card: #ffffff;
+
+        --text-main: #09090b; /* Zinc-950 */
+        --text-muted: #71717a; /* Zinc-500 */
+
+        --primary: #18181b;   /* Zinc-900 */
+        --primary-hover: #000000;
+        --primary-text: #ffffff;
+
+        --border: #e4e4e7;    /* Zinc-200 */
+
+        --success: #10b981;
+        --success-bg: #d1fae5;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+
+        --radius-btn: 9999px;
+        --radius-card: 24px;
+        --radius-input: 16px;
+
+        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* System Dark Mode Override */
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg-body: #09090b;   /* Zinc-950 (Rich Black) */
+          --bg-card: #18181b;   /* Zinc-900 */
+
+          --text-main: #fafafa; /* Zinc-50 */
+          --text-muted: #a1a1aa; /* Zinc-400 */
+
+          --primary: #fafafa;   /* Zinc-50 */
+          --primary-hover: #ffffff;
+          --primary-text: #09090b; /* Black text on white btn */
+
+          --border: #27272a;    /* Zinc-800 */
+
+          --success: #34d399;
+          --success-bg: rgba(52, 211, 153, 0.1);
+          --danger: #ef4444;
+          --warning: #fbbf24;
+
+          --shadow-sm: none;
+          --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.5);
+        }
+      }
+
+      /* Manual Theme Overrides (Highest Priority) */
+      [data-theme='light'] {
+        --bg-body: #ffffff;
+        --bg-card: #ffffff;
+        --text-main: #09090b;
+        --text-muted: #71717a;
+        --primary: #18181b;
+        --primary-hover: #000000;
+        --primary-text: #ffffff;
+        --border: #e4e4e7;
+        --success: #10b981;
+        --success-bg: #d1fae5;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+      }
+
+      [data-theme='dark'] {
+        --bg-body: #09090b;
+        --bg-card: #18181b;
+        --text-main: #fafafa;
+        --text-muted: #a1a1aa;
+        --primary: #fafafa;
+        --primary-hover: #ffffff;
+        --primary-text: #09090b;
+        --border: #27272a;
+        --success: #34d399;
+        --success-bg: rgba(52, 211, 153, 0.1);
+        --danger: #ef4444;
+        --warning: #fbbf24;
+        --shadow-sm: none;
+        --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.5);
       }
 
       body {
-        font-family:
-          'Inter',
-          -apple-system,
-          BlinkMacSystemFont,
-          sans-serif;
-        background-color: var(--bg-body);
+        font-family: var(--font-sans);
+        background: var(--bg-body);
         color: var(--text-main);
-        line-height: 1.6;
+        line-height: 1.5;
+        letter-spacing: -0.015em;
         -webkit-font-smoothing: antialiased;
         min-height: 100vh;
-        padding-bottom: 40px;
+        padding-bottom: 60px;
+        transition: background-color 0.3s ease, color 0.3s ease;
       }
 
+      /* Shell */
       .shell {
         max-width: 1000px;
         margin: 0 auto;
-        padding: 60px 24px;
+        padding: 80px 24px;
       }
 
       /* Header */
       header {
-        margin-bottom: 48px;
         text-align: center;
-        animation: fadeDown 0.6s ease-out;
+        margin-bottom: 64px;
+        animation: fadeDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       h1 {
-        font-size: 48px;
-        font-weight: 700;
-        letter-spacing: -0.05em;
-        margin-bottom: 12px;
-        background: linear-gradient(135deg, var(--text-main) 0%, #334155 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
+        font-size: 56px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+        margin-bottom: 16px;
+        color: var(--text-main);
       }
 
       .subtitle {
         font-size: 18px;
         color: var(--text-muted);
         font-weight: 400;
-        max-width: 500px;
+        max-width: 540px;
         margin: 0 auto;
+        text-wrap: balance;
+        line-height: 1.6;
       }
 
-      /* Layout */
+      /* Components */
       .grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 32px;
-        animation: fadeUp 0.6s ease-out 0.2s backwards;
+        gap: 48px;
+        animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards;
       }
 
-      /* Cards */
       .card {
         background: var(--bg-card);
-        border-radius: 24px;
-        padding: 32px;
-        box-shadow: var(--shadow-sm);
         border: 1px solid var(--border);
-        transition:
-          transform 0.2s ease,
-          box-shadow 0.2s ease;
+        border-radius: var(--radius-card);
+        padding: 32px;
         display: flex;
         flex-direction: column;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       .card:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
+        border-color: var(--text-muted);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.1);
       }
 
       .card h3 {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 600;
         margin-bottom: 8px;
-        color: var(--text-main);
+        letter-spacing: -0.02em;
       }
 
       .card-description {
         font-size: 14px;
         color: var(--text-muted);
         margin-bottom: 24px;
-        line-height: 1.5;
-        flex-grow: 1; /* Pushes content down if needed */
+        flex-grow: 1;
       }
 
       /* Buttons */
@@ -145,47 +313,72 @@
         font-size: 14px;
         font-weight: 600;
         border: none;
-        border-radius: 12px;
-        padding: 12px 24px;
+        border-radius: var(--radius-btn);
+        padding: 14px 28px;
         cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
+        position: relative;
+        overflow: hidden;
       }
 
-      button:focus-visible {
-        outline: 2px solid var(--text-main);
-        outline-offset: 2px;
+      button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+      }
+
+      button:hover::before {
+        width: 300px;
+        height: 300px;
       }
 
       button:not(.secondary) {
         background: var(--primary);
-        color: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        color: var(--primary-text);
       }
 
       button:not(.secondary):hover {
         background: var(--primary-hover);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
       }
 
       button:not(.secondary):active {
-        transform: translateY(0);
+        transform: translateY(0) scale(0.98);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: all 0.1s;
       }
 
       button.secondary {
         background: transparent;
-        color: var(--text-muted);
+        color: var(--text-main);
         border: 1px solid var(--border);
+      }
+
+      button.secondary::before {
+        background: rgba(0, 0, 0, 0.05);
       }
 
       button.secondary:hover {
         background: var(--bg-body);
-        color: var(--text-main);
-        border-color: var(--text-muted);
+        border-color: var(--text-main);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      }
+
+      button.secondary:active {
+        transform: translateY(0) scale(0.98);
       }
 
       .btn-disabled {
@@ -195,57 +388,96 @@
         box-shadow: none !important;
       }
 
-      .actions {
-        display: flex;
-        gap: 12px;
-        margin-top: auto;
-      }
-
-      /* Form Elements */
+      /* Inputs */
       textarea {
         width: 100%;
         font-family: inherit;
         font-size: 15px;
-        background: var(--bg-body);
-        border: 2px solid transparent;
-        border-radius: 16px;
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-input);
         padding: 16px;
         color: var(--text-main);
         outline: none;
         resize: none;
-        transition: all 0.2s ease;
-        margin-bottom: 16px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-bottom: 12px;
       }
 
       textarea:focus {
-        background: white;
-        border-color: var(--border);
-        box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.05);
+        border-color: var(--text-main);
+        background: var(--bg-body);
+        transform: scale(1.01);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       }
 
       textarea::placeholder {
         color: var(--text-muted);
       }
 
-      /* Status Text */
-      .status-text {
-        font-size: 13px;
+      /* How to Guide (Clean) */
+      .how-it-works {
+        margin-bottom: 48px;
+        padding: 0 12px;
+        animation: fadeDown 0.6s ease-out 0.1s backwards;
+      }
+
+      .how-title {
+        font-size: 28px;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 32px;
+        letter-spacing: -0.02em;
+        color: var(--text-main);
+      }
+
+      .steps-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+        text-align: center;
+      }
+
+      .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .step-num {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+        aspect-ratio: 1;
+        background: var(--primary);
+        color: var(--primary-text);
+        font-weight: 700;
+        font-size: 14px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .step h4 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .step p {
+        font-size: 14px;
         color: var(--text-muted);
-        margin-top: 16px;
-        display: block;
-        font-weight: 500;
-        opacity: 0;
-        animation: fadeIn 0.3s forwards;
+        line-height: 1.5;
+        max-width: 240px;
       }
 
       /* Device List */
-      ul {
-        list-style: none;
-      }
-
-      .wide {
-        grid-column: 1 / -1;
-      }
+      ul { list-style: none; }
+      .wide { grid-column: 1 / -1; }
 
       .device-list {
         display: grid;
@@ -253,78 +485,266 @@
         gap: 16px;
       }
 
+      .device-icon {
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 6px;
+      }
+
+      .device-empty {
+        text-align: center;
+        padding: 48px 24px;
+        color: var(--text-muted);
+      }
+
+      .device-empty svg {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 16px;
+        opacity: 0.5;
+        display: block;
+      }
+
+      .device-empty p {
+        margin: 0;
+      }
+
       .device {
-        background: var(--bg-body);
+        border: 1px solid var(--border);
         border-radius: 16px;
         padding: 16px;
-        border: 1px solid transparent;
-        transition: all 0.2s ease;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: slideIn 0.4s ease-out backwards;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
       }
 
       .device:hover {
-        background: white;
-        border-color: var(--border);
-        box-shadow: var(--shadow-sm);
+        border-color: var(--text-muted);
+        background: var(--bg-card);
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       }
 
       .device-info {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        font-size: 14px;
+        flex: 1;
       }
 
       .device strong {
-        color: var(--text-main);
         font-weight: 600;
+        font-size: 14px;
+        display: block;
+        color: var(--text-main);
+        margin-bottom: 4px;
       }
 
-      /* Targeting elements generated by app.js */
       .device .muted {
         font-size: 12px;
         color: var(--text-muted);
-        line-height: 1.4;
+        display: block;
+        margin-top: 2px;
       }
 
       .status {
-        display: flex;
-        align-items: center;
-        gap: 8px;
         font-size: 12px;
         font-weight: 600;
         color: var(--success);
-        background: rgba(16, 185, 129, 0.1);
+        background: var(--success-bg);
         padding: 6px 12px;
-        border-radius: 20px;
+        border-radius: 99px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        flex-shrink: 0;
       }
 
       .dot {
         width: 6px;
         height: 6px;
-        border-radius: 50%;
         background: currentColor;
-        box-shadow: 0 0 8px currentColor;
+        border-radius: 50%;
+        animation: pulse 2s ease-in-out infinite;
       }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.1); }
+      }
+
+      /* iOS Prompt */
+      .ios-prompt {
+        background: var(--bg-card);
+        border: 2px solid var(--warning);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 48px;
+        animation: fadeDown 0.5s backwards;
+      }
+
+      .ios-content {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .ios-icon {
+        flex-shrink: 0;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(245, 158, 11, 0.15);
+        border-radius: 12px;
+      }
+
+      .ios-icon svg {
+        width: 24px;
+        height: 24px;
+        color: var(--warning);
+        stroke-width: 2.5;
+      }
+
+      .ios-text {
+        flex: 1;
+      }
+
+      .ios-text strong {
+        color: var(--text-main);
+        display: block;
+        margin-bottom: 4px;
+        font-size: 15px;
+      }
+
+      .ios-text p {
+        font-size: 14px;
+        color: var(--text-muted);
+        line-height: 1.5;
+      }
+
+      /* GitHub Link */
+      .github-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 99px;
+        color: var(--text-main);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .github-link:hover {
+        border-color: var(--text-main);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
+
+      .github-link:active {
+        transform: translateY(0);
+      }
+
+      /* Actions & Status */
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .status-text {
+        font-size: 13px;
+        color: var(--text-muted);
+        font-weight: 500;
+        display: block;
+      }
+
+      /* Character Counter */
+      .char-counter {
+        font-size: 12px;
+        color: var(--text-muted);
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .char-counter.warning {
+        color: var(--warning);
+      }
+
+      .char-counter.danger {
+        color: var(--danger);
+      }
+
+      /* Theme Toggle */
+      .theme-toggle {
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        width: 48px;
+        height: 48px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+        z-index: 100;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        flex-shrink: 0;
+        padding: 0;
+      }
+
+      .theme-toggle:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        border-color: var(--text-main);
+      }
+
+      .theme-toggle svg { width: 20px; height: 20px; }
+
+      .theme-icon { position: absolute; transition: transform 0.3s ease, opacity 0.3s ease; }
+      .theme-icon.hidden { opacity: 0; transform: rotate(90deg) scale(0.5); }
 
       /* Toast */
       .toast {
         position: fixed;
-        left: 50%;
         bottom: 32px;
+        left: 50%;
         transform: translateX(-50%) translateY(20px);
-        background: var(--text-main);
-        color: white;
-        padding: 14px 24px;
+        background: var(--primary);
+        color: var(--primary-text);
+        padding: 12px 24px;
         border-radius: 99px;
         font-size: 14px;
-        box-shadow: var(--shadow-lg);
-        display: none;
+        font-weight: 500;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         opacity: 0;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        z-index: 100;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 200;
+        pointer-events: none;
       }
 
       .toast[style*='display: block'] {
@@ -333,80 +753,323 @@
       }
 
       /* Animations */
-      @keyframes fadeDown {
-        from {
-          opacity: 0;
-          transform: translateY(-20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+      /* Performance optimizations */
+      .card, .theme-toggle, button {
+        will-change: transform;
       }
 
-      @keyframes fadeUp {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes fadeIn {
-        to {
-          opacity: 1;
-        }
+      .card:not(:hover), .theme-toggle:not(:hover), button:not(:hover) {
+        will-change: auto;
       }
 
       /* Responsive */
       @media (max-width: 768px) {
-        .grid {
-          grid-template-columns: 1fr;
-          gap: 24px;
-        }
-
         .shell {
           padding: 40px 20px;
+          max-width: 100%;
         }
 
         h1 {
-          font-size: 36px;
+          font-size: 40px;
+          margin-bottom: 12px;
+        }
+
+        .subtitle {
+          font-size: 16px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+          gap: 20px;
         }
 
         .card {
-          padding: 24px;
+          padding: 20px;
         }
 
-        .device {
-          flex-direction: column;
+        .card h3 {
+          font-size: 18px;
+        }
+
+        .card-description {
+          font-size: 14px;
+          margin-bottom: 20px;
+        }
+
+        .how-it-works {
+          text-align: left;
+          margin-bottom: 32px;
+        }
+
+        .how-title {
+          font-size: 24px;
+          margin-bottom: 24px;
+        }
+
+        .steps-container {
+          grid-template-columns: 1fr;
+          gap: 24px;
+          text-align: left;
+        }
+
+        .step {
+          flex-direction: row;
           align-items: flex-start;
           gap: 12px;
         }
 
-        .status {
-          align-self: flex-start;
+        .step-num {
+          margin-top: 2px;
+        }
+
+        .step p {
+          max-width: none;
+        }
+
+        .device-list {
+          grid-template-columns: 1fr;
+        }
+
+        .theme-toggle {
+          bottom: 16px;
+          right: 16px;
+          width: 40px;
+          height: 40px;
+        }
+
+        .theme-toggle svg {
+          width: 16px;
+          height: 16px;
+        }
+
+        /* Ensure theme toggle doesn't overlap with content */
+        body {
+          padding-bottom: 80px;
+        }
+
+        .toast {
+          bottom: 20px;
+          max-width: calc(100% - 40px);
+          font-size: 13px;
+          padding: 10px 20px;
+        }
+
+        button {
+          padding: 12px 20px;
+          font-size: 13px;
+          width: 100%;
+        }
+
+        .actions {
+          gap: 10px;
+        }
+
+        textarea {
+          font-size: 14px;
+          padding: 12px;
+        }
+
+        .status-text {
+          font-size: 12px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .shell {
+          padding: 20px 16px;
+        }
+
+        body {
+          padding-bottom: 90px;
+        }
+
+        h1 {
+          font-size: 28px;
+        }
+
+        .subtitle {
+          font-size: 15px;
+        }
+
+        .card {
+          padding: 18px;
+        }
+
+        .card h3 {
+          font-size: 17px;
+        }
+
+        .github-link {
+          font-size: 12px;
+          padding: 6px 12px;
+        }
+
+        .how-title {
+          font-size: 22px;
+        }
+
+        .step-num {
+          width: 28px;
+          height: 28px;
+          min-width: 28px;
+          min-height: 28px;
+          font-size: 13px;
+        }
+
+        .device-empty {
+          padding: 28px 16px;
+        }
+
+        .device-empty svg {
+          width: 52px;
+          height: 52px;
+        }
+
+        .device-empty p {
+          font-size: 13px;
+        }
+
+        textarea {
+          padding: 10px;
+          font-size: 13px;
+        }
+
+        .char-counter {
+          font-size: 11px;
+        }
+
+        /* Hide keyboard shortcut hint on mobile */
+        .keyboard-hint {
+          display: none;
         }
       }
     </style>
   </head>
   <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <svg class="theme-icon sun-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+        />
+      </svg>
+      <svg class="theme-icon moon-icon hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+        />
+      </svg>
+    </button>
+
     <div class="shell">
       <header>
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 24px">
+          <a
+            href="https://github.com/Marmik-Soni/PushFlow"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="github-link"
+          >
+            <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
+              <path
+                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+              ></path>
+            </svg>
+            Star on GitHub
+          </a>
+        </div>
         <h1>PushFlow</h1>
-        <p class="subtitle">Unified real-time notification testing across all your devices.</p>
+        <p class="subtitle">Test push notifications instantly across all your devices—no setup required, just click and send!</p>
       </header>
+
+      <!-- iOS Installation Prompt (Hidden by default) -->
+      <div id="ios-prompt" class="ios-prompt" style="display: none">
+        <div class="ios-content">
+          <div class="ios-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+              <polyline points="16 6 12 2 8 6" />
+              <line x1="12" y1="2" x2="12" y2="15" />
+            </svg>
+          </div>
+          <div class="ios-text">
+            <strong>Install on iOS</strong>
+            <p>
+              Tap the Share button
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin: 0 2px;">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                <polyline points="16 6 12 2 8 6" />
+                <line x1="12" y1="2" x2="12" y2="15" />
+              </svg>
+              and select "Add to Home Screen" to enable notifications.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- How it Works -->
+      <section class="how-it-works">
+        <h2 class="how-title">How to Get Started</h2>
+        <div class="steps-container">
+          <div class="step">
+            <span class="step-num">1</span>
+            <div>
+              <h4>Enable Notifications</h4>
+              <p>Click "Enable Notifications" to subscribe this browser to receive push messages.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">2</span>
+            <div>
+              <h4>Connect More Devices</h4>
+              <p>Open this page on your phone or another computer and subscribe those devices too.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">3</span>
+            <div>
+              <h4>Send & Receive</h4>
+              <p>Type a message and click send—all your connected devices will get a notification instantly!</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <div class="grid">
         <!-- Subscription Card -->
         <section class="card">
           <h3>Your Device</h3>
-          <p class="card-description">Subscribe to enable push notifications on this browser.</p>
+          <p class="card-description">Enable notifications to start receiving broadcasts on this browser.</p>
           <div class="actions">
-            <button id="enableBtn">Enable Notifications</button>
-            <button id="unsubscribeBtn" class="secondary" style="display: none">Unsubscribe</button>
+            <button id="enableBtn">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              Enable Notifications
+            </button>
+            <button id="unsubscribeBtn" class="secondary" style="display: none">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Unsubscribe
+            </button>
           </div>
           <span id="statusText" class="status-text">Ready to subscribe.</span>
         </section>
@@ -414,17 +1077,45 @@
         <!-- Send Card -->
         <section class="card">
           <h3>Broadcast Message</h3>
-          <p class="card-description">Sending to all connected devices.</p>
-          <textarea id="messageInput" rows="3" placeholder="What's on your mind?"></textarea>
+          <p class="card-description">Send instant notifications to all your subscribed devices at once.</p>
+          <textarea id="messageInput" rows="3" placeholder="Type your message here..." maxlength="500"></textarea>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div class="char-counter" id="charCounter">0 / 500</div>
+            <span class="keyboard-hint" style="font-size: 11px; color: var(--text-muted); font-weight: 500;">
+              <kbd style="
+                background: var(--bg-body);
+                padding: 2px 6px;
+                border-radius: 4px;
+                border: 1px solid var(--border);
+                font-family: monospace;
+                font-size: 10px;
+              ">Ctrl</kbd>
+              +
+              <kbd style="
+                background: var(--bg-body);
+                padding: 2px 6px;
+                border-radius: 4px;
+                border: 1px solid var(--border);
+                font-family: monospace;
+                font-size: 10px;
+              ">Enter</kbd>
+              to send
+            </span>
+          </div>
           <div class="actions">
-            <button id="sendBtn" style="width: 100%">Send Broadcast</button>
+            <button id="sendBtn" style="width: 100%">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+              Send Notification
+            </button>
           </div>
         </section>
 
         <!-- Devices Card -->
         <section class="card wide">
           <h3>Active Devices</h3>
-          <p class="card-description">Real-time view of all subscribers.</p>
+          <p class="card-description">All devices currently subscribed and ready to receive notifications.</p>
           <ul id="devicesList" class="device-list">
             <!-- Populated by JS -->
           </ul>
@@ -442,7 +1133,8 @@
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
         z-index: 200;
         align-items: center;
         justify-content: center;
@@ -452,22 +1144,44 @@
     >
       <div
         style="
-          background: white;
-          padding: 24px;
+          background: var(--bg-card);
+          padding: 32px;
           border-radius: 24px;
           width: 90%;
-          max-width: 400px;
+          max-width: 420px;
           transform: scale(0.95);
           transition: transform 0.2s ease;
+          box-shadow: var(--shadow-lg);
         "
       >
-        <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 8px">Unsubscribe All?</h3>
-        <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 24px">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+          <div style="
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--danger);
+            opacity: 0.1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          ">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="var(--danger)" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h3 style="font-size: 20px; font-weight: 600; color: var(--text-main); margin: 0;">Unsubscribe All?</h3>
+        </div>
+        <p style="color: var(--text-muted); font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
           This will remove all registered devices from the database. This action cannot be undone.
         </p>
-        <div style="display: flex; gap: 12px; justify-content: flex-end">
-          <button id="cancelReset" class="secondary">Cancel</button>
-          <button id="confirmReset" style="background: var(--danger)">Yes, Reset All</button>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button id="cancelReset" class="secondary" style="min-width: 100px;">Cancel</button>
+          <button id="confirmReset" style="background: var(--danger); min-width: 100px;">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            Yes, Reset All
+          </button>
         </div>
       </div>
     </div>

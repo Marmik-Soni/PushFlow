@@ -29,10 +29,17 @@ async function getDb() {
 
 async function getCollections() {
   const db = await getDb();
-  return {
-    devices: db.collection('devices'),
-    messages: db.collection('messages'),
-  };
+  const devices = db.collection('devices');
+  const messages = db.collection('messages');
+
+  // Create indexes for better query performance
+  await devices.createIndex({ deviceId: 1 }, { unique: true });
+  await devices.createIndex({ lastSeen: -1 });
+  await devices.createIndex({ createdAt: -1 });
+  await messages.createIndex({ createdAt: -1 });
+  await messages.createIndex({ deviceId: 1 });
+
+  return { devices, messages };
 }
 
 export { getDb, getCollections };

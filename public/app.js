@@ -5,10 +5,26 @@ const statusText = document.getElementById('statusText');
 const devicesList = document.getElementById('devicesList');
 const messageInput = document.getElementById('messageInput');
 const toastEl = document.getElementById('toast');
+const themeToggle = document.getElementById('themeToggle');
+const charCounter = document.getElementById('charCounter');
 
 const AUTO_UNSUB_MS = 30 * 60 * 1000; // 30 minutes
 const EXPIRY_KEY = 'pushflow-expire-at';
 const POLL_DEVICES_MS = 15000; // refresh device list every 15s
+const THEME_KEY = 'pushflow-theme';
+
+// Utility: Debounce function
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
 
 const state = {
   registration: null,
@@ -16,7 +32,54 @@ const state = {
   deviceId: null,
   autoTimer: null,
   pollTimer: null,
+  isLoadingDevices: false, // Prevent duplicate requests
 };
+
+// Theme Management
+function initTheme() {
+  const savedTheme = localStorage.getItem(THEME_KEY);
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+  setTheme(theme);
+}
+
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem(THEME_KEY, theme);
+  updateThemeIcon(theme);
+}
+
+function updateThemeIcon(theme) {
+  const sunIcon = themeToggle.querySelector('.sun-icon');
+  const moonIcon = themeToggle.querySelector('.moon-icon');
+  if (theme === 'dark') {
+    sunIcon.classList.remove('hidden');
+    moonIcon.classList.add('hidden');
+  } else {
+    sunIcon.classList.add('hidden');
+    moonIcon.classList.remove('hidden');
+  }
+}
+
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  setTheme(newTheme);
+}
+
+// Character Counter
+function updateCharCounter() {
+  const length = messageInput.value.length;
+  const maxLength = messageInput.maxLength;
+  charCounter.textContent = `${length} / ${maxLength}`;
+
+  charCounter.classList.remove('warning', 'danger');
+  if (length > maxLength * 0.9) {
+    charCounter.classList.add('danger');
+  } else if (length > maxLength * 0.7) {
+    charCounter.classList.add('warning');
+  }
+}
 
 function getDeviceName() {
   const uaData = navigator.userAgentData;
@@ -55,13 +118,15 @@ function showToast(message, variant = 'info') {
     toastEl.style.backgroundColor = 'var(--danger)';
     toastEl.style.color = '#fff';
   } else {
-    toastEl.style.backgroundColor = 'var(--text-main)';
-    toastEl.style.color = '#fff';
+    // Use default CSS variables (high contrast)
+    toastEl.style.backgroundColor = '';
+    toastEl.style.color = '';
   }
 
   setTimeout(() => {
     toastEl.style.display = 'none';
     toastEl.style.backgroundColor = ''; // Reset
+    toastEl.style.color = ''; // Reset
   }, 3000);
 }
 
@@ -119,7 +184,18 @@ async function registerServiceWorker() {
     statusText.textContent = 'Service workers not supported.';
     return null;
   }
-  const registration = await navigator.serviceWorker.register('/sw.js');
+
+  // Register service worker with update check
+  const registration = await navigator.serviceWorker.register('/sw.js', {
+    updateViaCache: 'none', // Always check for updates
+  });
+
+  // Check for updates periodically
+  if (registration.waiting) {
+    // New service worker is waiting, prompt update
+    console.warn('New service worker waiting, will activate on next visit');
+  }
+
   return registration;
 }
 
@@ -147,63 +223,71 @@ async function ensureRegistration() {
 }
 
 async function subscribe() {
+  enableBtn.classList.add('loading');
+  enableBtn.disabled = true;
   statusText.textContent = 'Requesting permission…';
-  const permission = await Notification.requestPermission();
-  if (permission !== 'granted') {
-    statusText.textContent = 'Notifications blocked.';
-    showToast('Enable notifications to subscribe', 'error');
-    return;
-  }
 
-  const registration = await ensureRegistration();
-  const vapidKey = await getVapidKey();
-  const targetKey = urlBase64ToUint8Array(vapidKey);
-
-  const existing = await registration.pushManager.getSubscription();
-  if (existing) {
-    const match = keysMatch(existing.options.applicationServerKey, targetKey);
-    if (match) {
-      state.subscription = existing;
-      state.deviceId = getDeviceId();
-
-      await fetchJson('/subscribe', {
-        method: 'POST',
-        body: JSON.stringify({
-          deviceId: state.deviceId,
-          subscription: existing,
-          deviceName: getDeviceName(),
-        }),
-      });
-
-      statusText.textContent = 'Subscribed and ready.';
-      showToast('Device subscribed');
-      setExpiry();
-      updateUI(true);
-      await loadDevices();
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      statusText.textContent = 'Notifications blocked.';
+      showToast('Enable notifications to subscribe', 'error');
       return;
     }
 
-    await existing.unsubscribe();
+    const registration = await ensureRegistration();
+    const vapidKey = await getVapidKey();
+    const targetKey = urlBase64ToUint8Array(vapidKey);
+
+    const existing = await registration.pushManager.getSubscription();
+    if (existing) {
+      const match = keysMatch(existing.options.applicationServerKey, targetKey);
+      if (match) {
+        state.subscription = existing;
+        state.deviceId = getDeviceId();
+
+        await fetchJson('/subscribe', {
+          method: 'POST',
+          body: JSON.stringify({
+            deviceId: state.deviceId,
+            subscription: existing,
+            deviceName: getDeviceName(),
+          }),
+        });
+
+        statusText.textContent = 'Subscribed and ready.';
+        showToast('Device subscribed');
+        setExpiry();
+        updateUI(true);
+        await loadDevices();
+        return;
+      }
+
+      await existing.unsubscribe();
+    }
+
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: targetKey,
+    });
+
+    state.subscription = subscription;
+    state.deviceId = getDeviceId();
+
+    await fetchJson('/subscribe', {
+      method: 'POST',
+      body: JSON.stringify({ deviceId: state.deviceId, subscription, deviceName: getDeviceName() }),
+    });
+
+    statusText.textContent = 'Subscribed and ready.';
+    showToast('Device subscribed successfully!');
+    setExpiry();
+    updateUI(true);
+    await loadDevices();
+  } finally {
+    enableBtn.classList.remove('loading');
+    enableBtn.disabled = false;
   }
-
-  const subscription = await registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: targetKey,
-  });
-
-  state.subscription = subscription;
-  state.deviceId = getDeviceId();
-
-  await fetchJson('/subscribe', {
-    method: 'POST',
-    body: JSON.stringify({ deviceId: state.deviceId, subscription, deviceName: getDeviceName() }),
-  });
-
-  statusText.textContent = 'Subscribed and ready.';
-  showToast('Device subscribed');
-  setExpiry();
-  updateUI(true);
-  await loadDevices();
 }
 
 async function unsubscribe() {
@@ -236,31 +320,89 @@ async function unsubscribe() {
 function renderDevices(devices) {
   devicesList.innerHTML = '';
   if (!devices.length) {
-    const empty = document.createElement('li');
-    empty.className = 'device';
-    empty.textContent = 'No devices yet.';
+    const empty = document.createElement('div');
+    empty.className = 'device-empty';
+    empty.innerHTML = `
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+      <p><strong>No devices connected</strong></p>
+      <p style="font-size: 13px; margin-top: 4px;">Subscribe on this or another device to get started</p>
+    `;
     devicesList.appendChild(empty);
     return;
   }
 
-  devices.forEach((device) => {
+  devices.forEach((device, index) => {
     const li = document.createElement('li');
     li.className = 'device';
+    li.style.animationDelay = `${index * 0.05}s`;
+
+    const deviceIcon = getDeviceIcon(device.deviceName || '');
+
     const info = document.createElement('div');
-    info.innerHTML = `<strong>${device.deviceName || 'Unknown device'}</strong><br><span class="muted">${
-      device.deviceId
-    }</span><br><span class="muted">${new Date(device.lastSeen || device.createdAt).toLocaleString()}</span>`;
+    info.className = 'device-info';
+    info.innerHTML = `
+      <strong>
+        ${deviceIcon}
+        ${device.deviceName || 'Unknown device'}
+      </strong>
+      <span class="muted">${device.deviceId}</span>
+      <span class="muted">${new Date(device.lastSeen || device.createdAt).toLocaleString()}</span>
+    `;
+
     const status = document.createElement('div');
     status.className = 'status';
     status.innerHTML = '<span class="dot"></span><span>active</span>';
+
     li.appendChild(info);
     li.appendChild(status);
     devicesList.appendChild(li);
   });
 }
 
+function getDeviceIcon(deviceName) {
+  const name = deviceName.toLowerCase();
+  if (name.includes('ios') || name.includes('iphone') || name.includes('ipad')) {
+    return `<svg class="device-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+    </svg>`;
+  }
+  if (name.includes('android')) {
+    return `<svg class="device-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+    </svg>`;
+  }
+  if (name.includes('mobile')) {
+    return `<svg class="device-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+    </svg>`;
+  }
+  // Desktop
+  return `<svg class="device-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+  </svg>`;
+}
+
 async function loadDevices() {
+  // Prevent duplicate concurrent requests
+  if (state.isLoadingDevices) {
+    return;
+  }
+
+  state.isLoadingDevices = true;
+
   try {
+    // Show loading skeleton
+    if (devicesList.children.length === 0) {
+      showLoadingSkeleton();
+    }
+
     const data = await fetchJson('/devices');
     const devices = data.devices || [];
 
@@ -279,6 +421,36 @@ async function loadDevices() {
   } catch (error) {
     console.error('Failed to load devices', error);
     showToast('Could not load devices', 'error');
+    // Show error state in device list
+    devicesList.innerHTML = `
+      <div class="device-empty">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p><strong>Failed to load devices</strong></p>
+        <p style="font-size: 13px; margin-top: 4px;">Check your connection and try again</p>
+      </div>
+    `;
+  } finally {
+    state.isLoadingDevices = false;
+  }
+}
+
+function showLoadingSkeleton() {
+  devicesList.innerHTML = '';
+  for (let i = 0; i < 2; i++) {
+    const li = document.createElement('li');
+    li.className = 'device';
+    li.innerHTML = `
+      <div class="device-info" style="flex: 1;">
+        <div class="skeleton" style="height: 18px; width: 60%; margin-bottom: 8px;"></div>
+        <div class="skeleton" style="height: 14px; width: 80%; margin-bottom: 4px;"></div>
+        <div class="skeleton" style="height: 14px; width: 50%;"></div>
+      </div>
+      <div class="skeleton" style="height: 28px; width: 70px; border-radius: 20px;"></div>
+    `;
+    devicesList.appendChild(li);
   }
 }
 
@@ -286,6 +458,7 @@ async function sendMessage() {
   const message = (messageInput.value || '').trim();
   if (!message) {
     showToast('Type a message first', 'error');
+    messageInput.focus();
     return;
   }
 
@@ -318,6 +491,7 @@ async function sendMessage() {
           await fetchJson('/admin/unsubscribe-all', { method: 'POST' });
           showToast('System reset: All devices unsubscribed', 'error');
           messageInput.value = '';
+          updateCharCounter();
           await loadDevices();
         } catch (error) {
           console.error(error);
@@ -353,13 +527,18 @@ async function sendMessage() {
     showToast('Subscribe first to send', 'error');
     return;
   }
+
+  sendBtn.classList.add('loading');
+  sendBtn.disabled = true;
+
   try {
     await fetchJson('/send-notification', {
       method: 'POST',
       body: JSON.stringify({ deviceId: state.deviceId || getDeviceId(), message }),
     });
-    showToast('Notification sent');
+    showToast('Notification sent successfully! 📨');
     messageInput.value = '';
+    updateCharCounter();
   } catch (error) {
     console.error('Failed to send notification', error);
     let errMsg = 'Send failed';
@@ -379,6 +558,9 @@ async function sendMessage() {
     }
 
     showToast(errMsg, 'error');
+  } finally {
+    sendBtn.classList.remove('loading');
+    sendBtn.disabled = false;
   }
 }
 
@@ -409,9 +591,22 @@ async function init() {
         loadDevices().catch((error) => console.error('Poll devices failed', error));
       }, POLL_DEVICES_MS);
     }
+
+    checkIOS();
   } catch (error) {
     console.error('Initialization failed', error);
     statusText.textContent = 'Setup failed. See console.';
+  }
+}
+
+function checkIOS() {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+
+  // Show prompt if on iOS and NOT in standalone mode (i.e. running in Safari browser)
+  if (isIOS && !isStandalone) {
+    const prompt = document.getElementById('ios-prompt');
+    if (prompt) prompt.style.display = 'block';
   }
 }
 
@@ -436,7 +631,28 @@ sendBtn.addEventListener('click', () => {
   });
 });
 
-window.addEventListener('load', init);
+// Theme toggle
+themeToggle.addEventListener('click', toggleTheme);
+
+// Character counter
+const debouncedUpdateCharCounter = debounce(updateCharCounter, 100);
+messageInput.addEventListener('input', debouncedUpdateCharCounter);
+
+// Enter key to send (Ctrl/Cmd + Enter)
+messageInput.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    sendMessage().catch((error) => {
+      console.error('Send failed', error);
+      showToast('Send failed', 'error');
+    });
+  }
+});
+
+window.addEventListener('load', () => {
+  initTheme();
+  init();
+  updateCharCounter();
+});
 
 function scheduleAutoUnsubscribe() {
   const expiresAt = Number(window.localStorage.getItem(EXPIRY_KEY));

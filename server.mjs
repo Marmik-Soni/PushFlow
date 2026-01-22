@@ -19,6 +19,7 @@ const {
   VAPID_PUBLIC_KEY,
   VAPID_PRIVATE_KEY,
   VAPID_SUBJECT = 'mailto:example@example.com',
+  NODE_ENV = 'development',
 } = process.env;
 
 if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
@@ -26,6 +27,9 @@ if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
 }
 
 webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
+
+// Cache VAPID key to avoid repeated access
+const CACHED_VAPID_KEY = VAPID_PUBLIC_KEY;
 
 app.set('trust proxy', 1);
 
@@ -56,14 +60,22 @@ const apiLimiter = rateLimit({
 app.use(['/subscribe', '/unsubscribe', '/send-notification', '/devices'], apiLimiter);
 
 app.use(express.json({ limit: '1mb' }));
-app.use(express.static('public'));
+
+// Serve static files with caching
+app.use(
+  express.static('public', {
+    maxAge: NODE_ENV === 'production' ? '1d' : 0,
+    etag: true,
+    lastModified: true,
+  })
+);
 
 app.get('/health', (req, res) => {
   res.json({ ok: true });
 });
 
 app.get('/vapid-public-key', (req, res) => {
-  res.json({ key: VAPID_PUBLIC_KEY });
+  res.json({ key: CACHED_VAPID_KEY });
 });
 
 app.post('/subscribe', async (req, res) => {
@@ -117,6 +129,7 @@ app.post('/unsubscribe', async (req, res) => {
 app.get('/devices', async (req, res) => {
   try {
     const { devices } = await getCollections();
+    // Optimize: Use lean query and limit fields
     const results = await devices
       .find(
         {},
@@ -131,7 +144,8 @@ app.get('/devices', async (req, res) => {
           },
         }
       )
-      .sort({ lastSeen: -1, createdAt: -1 })
+      .sort({ lastSeen: -1 })
+      .limit(100) // Prevent huge responses
       .toArray();
 
     return res.json({ devices: results, count: results.length });
