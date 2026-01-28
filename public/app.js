@@ -437,6 +437,25 @@ async function loadDevices() {
   }
 }
 
+function startPolling() {
+  if (state.pollTimer || document.visibilityState !== 'visible') {
+    return;
+  }
+
+  const interval = navigator.connection?.saveData ? POLL_DEVICES_MS * 2 : POLL_DEVICES_MS;
+
+  state.pollTimer = setInterval(() => {
+    loadDevices().catch((error) => console.error('Poll devices failed', error));
+  }, interval);
+}
+
+function stopPolling() {
+  if (state.pollTimer) {
+    clearInterval(state.pollTimer);
+    state.pollTimer = null;
+  }
+}
+
 function showLoadingSkeleton() {
   devicesList.innerHTML = '';
   for (let i = 0; i < 2; i++) {
@@ -585,12 +604,7 @@ async function init() {
 
     await loadDevices();
 
-    // Poll devices list periodically to keep UI in sync
-    if (!state.pollTimer) {
-      state.pollTimer = setInterval(() => {
-        loadDevices().catch((error) => console.error('Poll devices failed', error));
-      }, POLL_DEVICES_MS);
-    }
+    startPolling();
 
     checkIOS();
   } catch (error) {
@@ -601,7 +615,8 @@ async function init() {
 
 function checkIOS() {
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+  const isStandalone =
+    window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
 
   // Show prompt if on iOS and NOT in standalone mode (i.e. running in Safari browser)
   if (isIOS && !isStandalone) {
@@ -646,6 +661,19 @@ messageInput.addEventListener('keydown', (e) => {
       showToast('Send failed', 'error');
     });
   }
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    loadDevices().catch((error) => console.error('Refresh devices failed', error));
+    startPolling();
+  } else {
+    stopPolling();
+  }
+});
+
+window.addEventListener('beforeunload', () => {
+  stopPolling();
 });
 
 window.addEventListener('load', () => {

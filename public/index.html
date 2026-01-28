@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f8fafc" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style"w content="default" />
+    <meta name="apple-mobile-web-app-status-bar-style" w content="default" />
     <title>PushFlow</title>
 
     <!-- PWA Manifest -->
@@ -25,12 +25,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=block"
       rel="stylesheet"
-      media="print"
-      onload="this.media='all'"
     />
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
     <style>
       :root {
@@ -41,11 +38,11 @@
         --text-main: #09090b; /* Zinc-950 */
         --text-muted: #71717a; /* Zinc-500 */
 
-        --primary: #18181b;   /* Zinc-900 */
+        --primary: #18181b; /* Zinc-900 */
         --primary-hover: #000000;
         --primary-text: #ffffff;
 
-        --border: #e4e4e7;    /* Zinc-200 */
+        --border: #e4e4e7; /* Zinc-200 */
 
         --success: #10b981;
         --success-bg: #d1fae5;
@@ -59,11 +56,36 @@
         --radius-card: 24px;
         --radius-input: 16px;
 
-        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      /* Manual Light Mode */
+      /* Dark Mode (System & Manual) */
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg-body: #09090b; /* Zinc-950 (Rich Black) */
+          --bg-card: #18181b; /* Zinc-900 */
+
+          --text-main: #fafafa; /* Zinc-50 */
+          --text-muted: #a1a1aa; /* Zinc-400 */
+
+          --primary: #fafafa; /* Zinc-50 */
+          --primary-hover: #ffffff;
+          --primary-text: #09090b; /* Black text on white btn */
+
+          --border: #27272a; /* Zinc-800 */
+
+          --success: #34d399;
+          --success-bg: rgba(52, 211, 153, 0.1);
+          --danger: #ef4444;
+          --warning: #fbbf24;
+
+          --shadow-sm: none;
+          --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        }
+      }
+
+      /* Manual theme overrides (highest priority; keeps user choice even on dark OS) */
       [data-theme='light'] {
         --bg-body: #ffffff;
         --bg-card: #ffffff;
@@ -78,31 +100,7 @@
         --danger: #ef4444;
         --warning: #f59e0b;
         --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      }
-
-      /* Dark Mode (System & Manual) */
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg-body: #09090b;   /* Zinc-950 (Rich Black) */
-          --bg-card: #18181b;   /* Zinc-900 */
-
-          --text-main: #fafafa; /* Zinc-50 */
-          --text-muted: #a1a1aa; /* Zinc-400 */
-
-          --primary: #fafafa;   /* Zinc-50 */
-          --primary-hover: #ffffff;
-          --primary-text: #09090b; /* Black text on white btn */
-
-          --border: #27272a;    /* Zinc-800 */
-
-          --success: #34d399;
-          --success-bg: rgba(52, 211, 153, 0.1);
-          --danger: #ef4444;
-          --warning: #fbbf24;
-
-          --shadow-sm: none;
-          --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.5);
-        }
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
       }
 
       [data-theme='dark'] {
@@ -119,6 +117,7 @@
         --danger: #ef4444;
         --warning: #fbbf24;
         --shadow-sm: none;
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
       }
 
       /* Resets & Base */
@@ -131,97 +130,12 @@
 
       html {
         scroll-behavior: smooth;
+        scrollbar-width: none;
+        overflow: auto;
       }
 
-      /* Base Variables (Default Light) */
-      :root {
-        /* Zinc Scale (Neutral but premium) */
-        --bg-body: #ffffff;
-        --bg-card: #ffffff;
-
-        --text-main: #09090b; /* Zinc-950 */
-        --text-muted: #71717a; /* Zinc-500 */
-
-        --primary: #18181b;   /* Zinc-900 */
-        --primary-hover: #000000;
-        --primary-text: #ffffff;
-
-        --border: #e4e4e7;    /* Zinc-200 */
-
-        --success: #10b981;
-        --success-bg: #d1fae5;
-        --danger: #ef4444;
-        --warning: #f59e0b;
-
-        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
-
-        --radius-btn: 9999px;
-        --radius-card: 24px;
-        --radius-input: 16px;
-
-        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      /* System Dark Mode Override */
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg-body: #09090b;   /* Zinc-950 (Rich Black) */
-          --bg-card: #18181b;   /* Zinc-900 */
-
-          --text-main: #fafafa; /* Zinc-50 */
-          --text-muted: #a1a1aa; /* Zinc-400 */
-
-          --primary: #fafafa;   /* Zinc-50 */
-          --primary-hover: #ffffff;
-          --primary-text: #09090b; /* Black text on white btn */
-
-          --border: #27272a;    /* Zinc-800 */
-
-          --success: #34d399;
-          --success-bg: rgba(52, 211, 153, 0.1);
-          --danger: #ef4444;
-          --warning: #fbbf24;
-
-          --shadow-sm: none;
-          --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.5);
-        }
-      }
-
-      /* Manual Theme Overrides (Highest Priority) */
-      [data-theme='light'] {
-        --bg-body: #ffffff;
-        --bg-card: #ffffff;
-        --text-main: #09090b;
-        --text-muted: #71717a;
-        --primary: #18181b;
-        --primary-hover: #000000;
-        --primary-text: #ffffff;
-        --border: #e4e4e7;
-        --success: #10b981;
-        --success-bg: #d1fae5;
-        --danger: #ef4444;
-        --warning: #f59e0b;
-        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
-      }
-
-      [data-theme='dark'] {
-        --bg-body: #09090b;
-        --bg-card: #18181b;
-        --text-main: #fafafa;
-        --text-muted: #a1a1aa;
-        --primary: #fafafa;
-        --primary-hover: #ffffff;
-        --primary-text: #09090b;
-        --border: #27272a;
-        --success: #34d399;
-        --success-bg: rgba(52, 211, 153, 0.1);
-        --danger: #ef4444;
-        --warning: #fbbf24;
-        --shadow-sm: none;
-        --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.5);
+      html::-webkit-scrollbar {
+        display: none;
       }
 
       body {
@@ -233,7 +147,14 @@
         -webkit-font-smoothing: antialiased;
         min-height: 100vh;
         padding-bottom: 60px;
-        transition: background-color 0.3s ease, color 0.3s ease;
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease;
+        scrollbar-width: none;
+      }
+
+      body::-webkit-scrollbar {
+        display: none;
       }
 
       /* Shell */
@@ -290,7 +211,7 @@
       .card:hover {
         border-color: var(--text-muted);
         transform: translateY(-4px);
-        box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
       }
 
       .card h3 {
@@ -335,7 +256,9 @@
         border-radius: 50%;
         background: rgba(255, 255, 255, 0.2);
         transform: translate(-50%, -50%);
-        transition: width 0.6s, height 0.6s;
+        transition:
+          width 0.6s,
+          height 0.6s;
       }
 
       button:hover::before {
@@ -351,12 +274,12 @@
       button:not(.secondary):hover {
         background: var(--primary-hover);
         transform: translateY(-2px) scale(1.02);
-        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
       }
 
       button:not(.secondary):active {
         transform: translateY(0) scale(0.98);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         transition: all 0.1s;
       }
 
@@ -374,7 +297,7 @@
         background: var(--bg-body);
         border-color: var(--text-main);
         transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
       }
 
       button.secondary:active {
@@ -408,7 +331,7 @@
         border-color: var(--text-main);
         background: var(--bg-body);
         transform: scale(1.01);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       }
 
       textarea::placeholder {
@@ -476,8 +399,12 @@
       }
 
       /* Device List */
-      ul { list-style: none; }
-      .wide { grid-column: 1 / -1; }
+      ul {
+        list-style: none;
+      }
+      .wide {
+        grid-column: 1 / -1;
+      }
 
       .device-list {
         display: grid;
@@ -537,7 +464,7 @@
         border-color: var(--text-muted);
         background: var(--bg-card);
         transform: translateX(4px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       }
 
       .device-info {
@@ -582,8 +509,15 @@
       }
 
       @keyframes pulse {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.7; transform: scale(1.1); }
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.7;
+          transform: scale(1.1);
+        }
       }
 
       /* iOS Prompt */
@@ -656,7 +590,7 @@
       .github-link:hover {
         border-color: var(--text-main);
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
 
       .github-link:active {
@@ -712,21 +646,32 @@
         cursor: pointer;
         transition: var(--transition);
         z-index: 100;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         flex-shrink: 0;
         padding: 0;
       }
 
       .theme-toggle:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
         border-color: var(--text-main);
       }
 
-      .theme-toggle svg { width: 20px; height: 20px; }
+      .theme-toggle svg {
+        width: 20px;
+        height: 20px;
+      }
 
-      .theme-icon { position: absolute; transition: transform 0.3s ease, opacity 0.3s ease; }
-      .theme-icon.hidden { opacity: 0; transform: rotate(90deg) scale(0.5); }
+      .theme-icon {
+        position: absolute;
+        transition:
+          transform 0.3s ease,
+          opacity 0.3s ease;
+      }
+      .theme-icon.hidden {
+        opacity: 0;
+        transform: rotate(90deg) scale(0.5);
+      }
 
       /* Toast */
       .toast {
@@ -740,7 +685,7 @@
         border-radius: 99px;
         font-size: 14px;
         font-weight: 500;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         opacity: 0;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 200;
@@ -753,15 +698,37 @@
       }
 
       /* Animations */
-      @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-      @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes fadeDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
       /* Performance optimizations */
-      .card, .theme-toggle, button {
+      .card,
+      .theme-toggle,
+      button {
         will-change: transform;
       }
 
-      .card:not(:hover), .theme-toggle:not(:hover), button:not(:hover) {
+      .card:not(:hover),
+      .theme-toggle:not(:hover),
+      button:not(:hover) {
         will-change: auto;
       }
 
@@ -959,7 +926,12 @@
           d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
         />
       </svg>
-      <svg class="theme-icon moon-icon hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg
+        class="theme-icon moon-icon hidden"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -987,7 +959,10 @@
           </a>
         </div>
         <h1>PushFlow</h1>
-        <p class="subtitle">Test push notifications instantly across all your devices—no setup required, just click and send!</p>
+        <p class="subtitle">
+          Test push notifications instantly across all your devices—no setup required, just click
+          and send!
+        </p>
       </header>
 
       <!-- iOS Installation Prompt (Hidden by default) -->
@@ -1013,7 +988,17 @@
             <strong>Install on iOS</strong>
             <p>
               Tap the Share button
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin: 0 2px;">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                style="vertical-align: middle; margin: 0 2px"
+              >
                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
                 <polyline points="16 6 12 2 8 6" />
                 <line x1="12" y1="2" x2="12" y2="15" />
@@ -1032,21 +1017,28 @@
             <span class="step-num">1</span>
             <div>
               <h4>Enable Notifications</h4>
-              <p>Click "Enable Notifications" to subscribe this browser to receive push messages.</p>
+              <p>
+                Click "Enable Notifications" to subscribe this browser to receive push messages.
+              </p>
             </div>
           </div>
           <div class="step">
             <span class="step-num">2</span>
             <div>
               <h4>Connect More Devices</h4>
-              <p>Open this page on your phone or another computer and subscribe those devices too.</p>
+              <p>
+                Open this page on your phone or another computer and subscribe those devices too.
+              </p>
             </div>
           </div>
           <div class="step">
             <span class="step-num">3</span>
             <div>
               <h4>Send & Receive</h4>
-              <p>Type a message and click send—all your connected devices will get a notification instantly!</p>
+              <p>
+                Type a message and click send—all your connected devices will get a notification
+                instantly!
+              </p>
             </div>
           </div>
         </div>
@@ -1056,16 +1048,36 @@
         <!-- Subscription Card -->
         <section class="card">
           <h3>Your Device</h3>
-          <p class="card-description">Enable notifications to start receiving broadcasts on this browser.</p>
+          <p class="card-description">
+            Enable notifications to start receiving broadcasts on this browser.
+          </p>
           <div class="actions">
             <button id="enableBtn">
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                />
               </svg>
               Enable Notifications
             </button>
             <button id="unsubscribeBtn" class="secondary" style="display: none">
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
               Unsubscribe
@@ -1077,35 +1089,69 @@
         <!-- Send Card -->
         <section class="card">
           <h3>Broadcast Message</h3>
-          <p class="card-description">Send instant notifications to all your subscribed devices at once.</p>
-          <textarea id="messageInput" rows="3" placeholder="Type your message here..." maxlength="500"></textarea>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <p class="card-description">
+            Send instant notifications to all your subscribed devices at once.
+          </p>
+          <textarea
+            id="messageInput"
+            rows="3"
+            placeholder="Type your message here..."
+            maxlength="500"
+          ></textarea>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 16px;
+            "
+          >
             <div class="char-counter" id="charCounter">0 / 500</div>
-            <span class="keyboard-hint" style="font-size: 11px; color: var(--text-muted); font-weight: 500;">
-              <kbd style="
-                background: var(--bg-body);
-                padding: 2px 6px;
-                border-radius: 4px;
-                border: 1px solid var(--border);
-                font-family: monospace;
-                font-size: 10px;
-              ">Ctrl</kbd>
+            <span
+              class="keyboard-hint"
+              style="font-size: 11px; color: var(--text-muted); font-weight: 500"
+            >
+              <kbd
+                style="
+                  background: var(--bg-body);
+                  padding: 2px 6px;
+                  border-radius: 4px;
+                  border: 1px solid var(--border);
+                  font-family: monospace;
+                  font-size: 10px;
+                "
+                >Ctrl</kbd
+              >
               +
-              <kbd style="
-                background: var(--bg-body);
-                padding: 2px 6px;
-                border-radius: 4px;
-                border: 1px solid var(--border);
-                font-family: monospace;
-                font-size: 10px;
-              ">Enter</kbd>
+              <kbd
+                style="
+                  background: var(--bg-body);
+                  padding: 2px 6px;
+                  border-radius: 4px;
+                  border: 1px solid var(--border);
+                  font-family: monospace;
+                  font-size: 10px;
+                "
+                >Enter</kbd
+              >
               to send
             </span>
           </div>
           <div class="actions">
             <button id="sendBtn" style="width: 100%">
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                />
               </svg>
               Send Notification
             </button>
@@ -1115,7 +1161,9 @@
         <!-- Devices Card -->
         <section class="card wide">
           <h3>Active Devices</h3>
-          <p class="card-description">All devices currently subscribed and ready to receive notifications.</p>
+          <p class="card-description">
+            All devices currently subscribed and ready to receive notifications.
+          </p>
           <ul id="devicesList" class="device-list">
             <!-- Populated by JS -->
           </ul>
@@ -1154,31 +1202,57 @@
           box-shadow: var(--shadow-lg);
         "
       >
-        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
-          <div style="
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: var(--danger);
-            opacity: 0.1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          ">
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="var(--danger)" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px">
+          <div
+            style="
+              width: 48px;
+              height: 48px;
+              border-radius: 12px;
+              background: var(--danger);
+              opacity: 0.1;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <svg
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="var(--danger)"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
             </svg>
           </div>
-          <h3 style="font-size: 20px; font-weight: 600; color: var(--text-main); margin: 0;">Unsubscribe All?</h3>
+          <h3 style="font-size: 20px; font-weight: 600; color: var(--text-main); margin: 0">
+            Unsubscribe All?
+          </h3>
         </div>
-        <p style="color: var(--text-muted); font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
+        <p style="color: var(--text-muted); font-size: 15px; line-height: 1.6; margin-bottom: 24px">
           This will remove all registered devices from the database. This action cannot be undone.
         </p>
-        <div style="display: flex; gap: 12px; justify-content: flex-end;">
-          <button id="cancelReset" class="secondary" style="min-width: 100px;">Cancel</button>
-          <button id="confirmReset" style="background: var(--danger); min-width: 100px;">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        <div style="display: flex; gap: 12px; justify-content: flex-end">
+          <button id="cancelReset" class="secondary" style="min-width: 100px">Cancel</button>
+          <button id="confirmReset" style="background: var(--danger); min-width: 100px">
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
             </svg>
             Yes, Reset All
           </button>

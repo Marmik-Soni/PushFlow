@@ -10,6 +10,7 @@ if (!MONGODB_URI) {
 }
 
 let client;
+let indexesEnsured = false;
 
 async function getClient() {
   if (!client) {
@@ -32,12 +33,15 @@ async function getCollections() {
   const devices = db.collection('devices');
   const messages = db.collection('messages');
 
-  // Create indexes for better query performance
-  await devices.createIndex({ deviceId: 1 }, { unique: true });
-  await devices.createIndex({ lastSeen: -1 });
-  await devices.createIndex({ createdAt: -1 });
-  await messages.createIndex({ createdAt: -1 });
-  await messages.createIndex({ deviceId: 1 });
+  // Ensure indexes once per process to avoid extra work on each request
+  if (!indexesEnsured) {
+    await devices.createIndex({ deviceId: 1 }, { unique: true });
+    await devices.createIndex({ lastSeen: -1 });
+    await devices.createIndex({ createdAt: -1 });
+    await messages.createIndex({ createdAt: -1 });
+    await messages.createIndex({ deviceId: 1 });
+    indexesEnsured = true;
+  }
 
   return { devices, messages };
 }
