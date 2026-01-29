@@ -296,18 +296,18 @@ GET /devices
 
 ### Environment Variables
 
-| Variable               | Description                               | Required |
-| ---------------------- | ----------------------------------------- | -------- | ----- |
-| `MONGODB_URI`          | MongoDB connection string                 | ✅       |
-| `MONGODB_DB_NAME`      | Database name                             | ✅       |
-| `VAPID_PUBLIC_KEY`     | VAPID public key                          | ✅       |
-| `VAPID_PRIVATE_KEY`    | VAPID private key                         | ✅       |
-| `VAPID_SUBJECT`        | mailto: or https:// URL                   | ✅       |
-| `PORT`                 | Server port                               | ❌       | 3000  |
-| `LOG_FORMAT`           | Morgan log format                         | ❌       | dev   |
-| `RATE_LIMIT_WINDOW_MS` | Rate limit window in milliseconds         | ❌       | 60000 |
-| `RATE_LIMIT_MAX`       | Max requests per window                   | ❌       | 100   |
-| `NODE_ENV`             | Environment (`development`, `production`) | ❌       | dev   |
+| Variable | Description | Required | Default |
+|---------|------------|----------|---------|
+| `MONGODB_URI` | MongoDB connection string | ✅ | — |
+| `MONGODB_DB_NAME` | Database name | ✅ | — |
+| `VAPID_PUBLIC_KEY` | VAPID public key | ✅ | — |
+| `VAPID_PRIVATE_KEY` | VAPID private key | ✅ | — |
+| `VAPID_SUBJECT` | mailto: or https URL | ✅ | — |
+| `PORT` | Server port | ❌ | `3000` |
+| `LOG_FORMAT` | Morgan log format | ❌ | `dev` |
+| `RATE_LIMIT_WINDOW_MS` | Rate limit window (ms) | ❌ | `60000` |
+| `RATE_LIMIT_MAX` | Max requests per window | ❌ | `100` |
+| `NODE_ENV` | Environment (`development` / `production`) | ❌ | `dev` |
 
 ### Security Features
 
